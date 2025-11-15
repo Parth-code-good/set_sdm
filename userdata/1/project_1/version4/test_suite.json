@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Test Purchase Orders Creation",
+    "type": "integration",
+    "sql": "INSERT INTO Purchase_Orders (supplier_id, user_id, status, total) VALUES (1, 1, 'Pending', 100.00);",
+    "rationale": "Verifies that a purchase order can be successfully created and stored in the Purchase_Orders table."
+  },
+  {
+    "name": "Test Purchase Order Items Creation",
+    "type": "integration",
+    "sql": "INSERT INTO Purchase_Order_Items (purchase_order_id, product_id, quantity, price) VALUES (1, 1, 10, 10.00);",
+    "rationale": "Checks if purchase order items can be added correctly to the Purchase_Order_Items table."
+  },
+  {
+    "name": "Test Foreign Key Constraint on Purchase Orders",
+    "type": "unit",
+    "sql": "INSERT INTO Purchase_Orders (supplier_id, user_id, status, total) VALUES (99, 1, 'Pending', 50.00);",
+    "rationale": "Ensures that inserting a purchase order with an invalid supplier_id raises a foreign key constraint error."
+  },
+  {
+    "name": "Test Foreign Key Constraint on Purchase Order Items",
+    "type": "unit",
+    "sql": "INSERT INTO Purchase_Order_Items (purchase_order_id, product_id, quantity, price) VALUES (99, 1, 5, 15.00);",
+    "rationale": "Confirms that an invalid purchase_order_id triggers a foreign key constraint error."
+  }
+]

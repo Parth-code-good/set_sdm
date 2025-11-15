@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>{{ project.name }} / {{ version.name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    pre { background:#0b0c0d; color:#dcdcdc; padding:1rem; border-radius:6px; max-height:360px; overflow:auto; }
+    .mermaid { background:white; padding:1rem; border-radius:6px; color:black; }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between">
+      <h4>{{ project.name }} / {{ version.name }}</h4>
+      <div>
+        <a class="btn btn-outline-light" href="{{ url_for('project_detail', project_id=project.id) }}">Back</a>
+        <a class="btn btn-outline-light" href="{{ url_for('version_download_file', version_id=version.id, filename='schema.sql') }}">Download SQL</a>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-3">
+      <div class="col-md-6">
+        <h5>SQL Schema</h5>
+        <pre><code id="schema-block">{{ schema }}</code></pre>
+        <h6 class="mt-3">Utility / Why these tables?</h6>
+        <pre id="utility-block">{{ utility }}</pre>
+      </div>
+
+      <div class="col-md-6">
+        <h5>ER Diagram</h5>
+        <div class="mermaid" id="mermaid-block">{{ mermaid | safe }}</div>
+
+        <h6 class="mt-3">Run SQL</h6>
+        <form id="query-form">
+          <textarea id="sql-input" class="form-control mb-2" rows="3" placeholder="Write SQL (SELECT / INSERT / UPDATE...)."></textarea>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="commit-check">
+            <label class="form-check-label" for="commit-check">Commit writes</label>
+          </div>
+          <button class="btn btn-primary" type="submit">Run</button>
+        </form>
+        <div class="mt-2">
+          <pre id="query-result"></pre>
+        </div>
+
+        <h6 class="mt-3">AI Test Suite</h6>
+        <button class="btn btn-secondary" id="run-tests-btn">Run Tests</button>
+        <pre id="test-result"></pre>
+
+        <h6 class="mt-3">Ask LLM to modify schema</h6>
+        <form id="modify-form">
+          <textarea id="modify-instruction" class="form-control mb-2" rows="2" placeholder="e.g., add email to users and make it unique"></textarea>
+          <button class="btn btn-warning" type="submit">Request Modification</button>
+        </form>
+        <div id="modify-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    const versionId = "{{version.id}}";
+    // Run query
+    document.getElementById('query-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sql = document.getElementById('sql-input').value;
+      const commit = document.getElementById('commit-check').checked;
+      const res = await fetch(`/version/${versionId}/run_query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sql, commit })
+      });
+      const j = await res.json();
+      document.getElementById('query-result').textContent = JSON.stringify(j, null, 2);
+    });
+
+    // Run tests
+    document.getElementById('run-tests-btn').addEventListener('click', async () => {
+      const res = await fetch(`/version/${versionId}/run_tests`, { method: 'POST' });
+      const j = await res.json();
+      document.getElementById('test-result').textContent = JSON.stringify(j, null, 2);
+    });
+
+    // Modify schema
+    document.getElementById('modify-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const instruction = document.getElementById('modify-instruction').value;
+      document.getElementById('modify-result').textContent = "Requesting modification...";
+      const res = await fetch(`/version/${versionId}/modify_schema`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instruction })
+      });
+      const j = await res.json();
+      if (j.error) {
+        document.getElementById('modify-result').textContent = "Error: " + JSON.stringify(j);
+      } else {
+        document.getElementById('modify-result').innerHTML = `<div class="alert alert-success">Created new version: ${j.new_version_name} (id ${j.new_version_id})</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Test Table Creation",
+    "type": "schema",
+    "sql": "CREATE TABLE Users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);",
+    "rationale": "Ensure that Users table is created successfully."
+  },
+  {
+    "name": "Test Insert Users",
+    "type": "insertion",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('testuser', 'password123', 'test@example.com');",
+    "rationale": "Check insertion into Users table."
+  },
+  {
+    "name": "Test Insert Products",
+    "type": "insertion",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Test Product', 'A sample product', 10.00, 100);",
+    "rationale": "Check insertion into Products table."
+  },
+  {
+    "name": "Test Inserting Suppliers",
+    "type": "insertion",
+    "sql": "INSERT INTO Suppliers (name, contact_email, phone_number, address) VALUES ('Test Supplier', 'supplier@example.com', '1234567890', '123 Test St');",
+    "rationale": "Check insertion into Suppliers table."
+  },
+  {
+    "name": "Test Insert Purchase Invoice",
+    "type": "insertion",
+    "sql": "INSERT INTO Purchase_Invoices (supplier_id, total_amount) VALUES ((SELECT id FROM Suppliers WHERE name = 'Test Supplier'), 500.00);",
+    "rationale": "Check that the purchase invoice is linked to existing supplier."
+  },
+  {
+    "name": "Test Update Product Stock Quantity After Purchase Invoice",
+    "type": "update",
+    "sql": "UPDATE Products SET stock_quantity = stock_quantity + 50 WHERE name = 'Test Product';",
+    "rationale": "Verify that product stock increases after a purchase invoice."
+  },
+  {
+    "name": "Test Validate Product Stock After Purchase",
+    "type": "select",
+    "sql": "SELECT stock_quantity FROM Products WHERE name = 'Test Product';",
+    "rationale": "Ensure that the stock quantity reflects the increase after the purchase."
+  }
+]

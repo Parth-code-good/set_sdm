@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Test Unique Product Names",
+    "type": "sql",
+    "sql": "INSERT INTO Products (name, price, stock_quantity) VALUES ('Widget', 19.99, 10); INSERT INTO Products (name, price, stock_quantity) VALUES ('Widget', 19.99, 5);",
+    "rationale": "Attempting to insert a duplicate product should throw an error due to UNIQUE constraint."
+  },
+  {
+    "name": "Test Inserting Unique Product with Updated Quantity",
+    "type": "sql",
+    "sql": "INSERT INTO Products (name, price, stock_quantity) VALUES ('Gadget', 29.99, 4); INSERT INTO Products (name, price, stock_quantity) VALUES ('Gadget', 29.99, 6);",
+    "rationale": "A test case to verify that when adding a duplicate product, the quantity is increased instead of creating a new entry."
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Test User Role Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Users (username, password, email, role) VALUES ('test_user', 'password123', 'test@example.com', 'admin');",
+    "rationale": "Ensure a user can be inserted with the new role."
+  },
+  {
+    "name": "Test Role Column Not Null Constraint",
+    "type": "insert",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('test_user_no_role', 'password123', 'test_no_role@example.com');",
+    "rationale": "Check that users can be inserted without specifying a role, ensuring role is optional."
+  },
+  {
+    "name": "Test Role Value Retrieval",
+    "type": "select",
+    "sql": "SELECT role FROM Users WHERE username = 'test_user';",
+    "rationale": "Verify that the role can be retrieved correctly after insertion."
+  },
+  {
+    "name": "Test Unique Role Assignment",
+    "type": "insert",
+    "sql": "INSERT INTO Users (username, password, email, role) VALUES ('test_user2', 'password123', 'test2@example.com', 'editor');",
+    "rationale": "Ensure that distinct users can have distinct roles assigned."
+  },
+  {
+    "name": "Test Existing User Role Update",
+    "type": "update",
+    "sql": "UPDATE Users SET role = 'manager' WHERE username = 'test_user';",
+    "rationale": "Check that the role can be updated for an existing user."
+  }
+]

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Model</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #212529; 
+            color: #f8f9fa; 
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .report-card-body, .test-suite-body {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .form-section {
+            background-color: #343a40; 
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid #495057; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1rem;
+            border-radius: 0.3rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        code {
+            white-space: pre-wrap;
+        }
+        .mermaid {
+            background-color: #ffffff; 
+            padding: 1rem;
+            border-radius: 0.3rem;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .or-divider {
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: 500;
+            color: #adb5bd; 
+        }
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .header-nav h2 {
+            color: #f8f9fa; 
+        }
+        .test-suite-body code.small {
+            color: #e3e3e3;
+        }
+        .result-card {
+            background-color: #343a40 !important;
+            border: 1px solid #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="header-nav">
+            <h2 class="mb-0">Create New Model</h2>
+            <a href="{{ url_for('home') }}" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left me-1"></i> Back to Home
+            </a>
+        </div>
+        
+        <div class="form-section mb-4">
+            
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="prompt" class="form-label">Define your concept (e.g., "a simple blog, university library"):</label>
+                    <textarea id="prompt" name="prompt" class="form-control" rows="3" placeholder="Type your concept here..."></textarea>
+                </div>
+                
+                <div class="or-divider">OR</div>
+
+                <div class="mb-3">
+                  <label for="sql_file" class="form-label">Upload existing .sql file:</label>
+                  <input class="form-control" type="file" id="sql_file" name="sql_file" accept=".sql">
+                </div>
+
+                <button type="submit" class="btn btn-primary d-block w-30 mx-auto">Generate Model</button>
+            </form>
+        </div>
+        
+        {% if prompt_text %}
+        <div class="alert alert-info">
+            <h5>Generated results for: <strong>{{ prompt_text }}</strong></h5>
+        </div>
+        <hr>
+        {% endif %}
+
+        {% if sql_schema %}
+        <div class="row g-4">
+            <div class="col-md-6">
+                <h4>Generated SQL Schema:</h4>
+                <pre><code>{{ sql_schema }}</code></pre>
+            </div>
+            <div class="col-md-6">
+                <h4>Generated ER Diagram:</h4>
+                
+                <div class="mermaid">
+                    {{ mermaid_diagram | safe }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if static_report %}
+        <div class="row mt-4"> 
+            <div class="col-lg-12">
+                <div class="card result-card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title mb-3">
+                            <i class="bi bi-shield-check me-2"></i>Static Analysis Report
+                        </h4>
+                        <div class="report-card-body flex-grow-1">
+                            
+                            {% for finding in static_report %}
+                                {% set alert_class = 'alert-secondary' %}
+                                {% if finding.type == 'success' %}
+                                    {% set alert_class = 'alert-success' %}
+                                {% elif finding.type == 'warning' %}
+                                    {% set alert_class = 'alert-warning' %}
+                                {% elif finding.type == 'error' %}
+                                    {% set alert_class = 'alert-danger' %}
+                                {% endif %}
+                                
+                                <div class="alert {{ alert_class }} p-2 mb-2">
+                                    <h6 class="alert-heading mb-0 fs-6">
+                                        {% if finding.type == 'success' %}
+                                            <i class="bi bi-check-circle-fill me-1"></i> Success
+                                        {% elif finding.type == 'warning' %}
+                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Warning
+                                        {% elif finding.type == 'error' %}
+                                            <i class="bi bi-x-octagon-fill me-1"></i> Error
+                                        {% endif %}
+                                    </h6>
+                                    {% if finding.table %}
+                                        <small class="text-muted">Table: <strong>{{ finding.table }}</strong></small>
+                                    {% endif %}
+                                    <p class="mb-0 small">{{ finding.message }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if test_suite %}
+        <div class="row g-4 mt-4"> 
+            <div class="col-lg-12">
+                <div class="card result-card shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title mb-3"><i class="bi bi-bug me-2"></i>AI-Generated Test Suite</h4>
+                        <div class="test-suite-body flex-grow-1">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" style="width: 10%;">Type</th>
+                                        <th scope="col" style="width: 25%;">Test Name</th>
+                                        <th scope="col" style="width: 35%;">Rationale / Purpose</th>
+                                        <th scope="col" style="width: 30%;">SQL Command</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for test in test_suite %}
+                                    <tr>
+                                        <td>
+                                            {% if test.type == 'normal' %}
+                                                <span class="badge bg-success">Normal</span>
+                                            {% elif test.type == 'edge' %}
+                                                <span class="badge bg-warning">Edge</span>
+                                            {% elif test.type == 'error' %}
+                                                <span class="badge bg-danger">Error</span> 
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ test.name }}</td>
+                                        <td><small>{{ test.rationale }}</small></td>
+                                        <td><code class="small">{{ test.sql }}</code></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="mb-5"></div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true , theme: 'dark'});
+    </script>
+</body>
+</html>

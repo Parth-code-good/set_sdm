@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Insert a new user",
+    "type": "normal",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('testuser', 'password123', 'testuser@example.com');",
+    "rationale": "Testing user creation ensures the system can store new entries and manage unique constraints."
+  },
+  {
+    "name": "Update a user's email",
+    "type": "normal",
+    "sql": "UPDATE Users SET email = 'newemail@example.com' WHERE username = 'testuser';",
+    "rationale": "Validating email updates verifies that existing users can modify their contact information."
+  },
+  {
+    "name": "Insert a new department",
+    "type": "normal",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('Sales', 1);",
+    "rationale": "Creating a new department with a manager checks the integrity of foreign key relationships."
+  },
+  {
+    "name": "Insert a new product",
+    "type": "normal",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Widget', 'A useful widget', 19.99, 100);",
+    "rationale": "Adding products tests the functionality for inventory management."
+  },
+  {
+    "name": "Create a new order",
+    "type": "normal",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (1, 'Pending', 39.98);",
+    "rationale": "Testing order creation is crucial to validate the purchasing flow from users."
+  },
+  {
+    "name": "Insert a new user with existing username",
+    "type": "edge",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('testuser', 'password456', 'different@example.com');",
+    "rationale": "This tests the system's ability to enforce unique constraints on usernames."
+  },
+  {
+    "name": "Update a user's email to an existing email",
+    "type": "edge",
+    "sql": "UPDATE Users SET email = 'testuser@example.com' WHERE username = 'anotheruser';",
+    "rationale": "Verifying the handling of duplicate email entries ensures data integrity across the user table."
+  },
+  {
+    "name": "Insert a department with a non-existent manager",
+    "type": "edge",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('Marketing', 999);",
+    "rationale": "This tests the system's foreign key constraints when the referenced user does not exist."
+  },
+  {
+    "name": "Insert a product with negative stock quantity",
+    "type": "edge",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Fragile Widget', 'A fragile widget', 29.99, -10);",
+    "rationale": "Testing for negative stock quantity ensures the system properly validates inventory entries."
+  },
+  {
+    "name": "Create an order with a non-existent user",
+    "type": "edge",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (999, 'Pending', 59.99);",
+    "rationale": "This checks if the system properly enforces foreign key constraints when the user doesn't exist."
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Test User Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Users (username, password, email, role) VALUES ('testuser', 'securepassword', 'testuser@example.com', 'admin');",
+    "rationale": "To verify that a new user can be successfully created."
+  },
+  {
+    "name": "Test Unique Username Constraint in Users",
+    "type": "insert",
+    "sql": "INSERT INTO Users (username, password, email, role) VALUES ('testuser', 'securepassword', 'anotheruser@example.com', 'user');",
+    "rationale": "To check that a username must be unique in the Users table."
+  },
+  {
+    "name": "Test Department Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('Sales', 1);",
+    "rationale": "To verify that a new department can be successfully created with a manager."
+  },
+  {
+    "name": "Test Unique Department Name Constraint",
+    "type": "insert",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('Sales', 2);",
+    "rationale": "To ensure that department names are unique."
+  },
+  {
+    "name": "Test Product Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Laptop', 'A high-end laptop', 1200.00, 10);",
+    "rationale": "To verify that a new product can be successfully created."
+  },
+  {
+    "name": "Test Unique Product Name Constraint",
+    "type": "insert",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Laptop', 'Another laptop', 1000.00, 5);",
+    "rationale": "To check that product names must be unique."
+  },
+  {
+    "name": "Test Order Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (1, 'Pending', 100.00);",
+    "rationale": "To verify that an order can be successfully created."
+  },
+  {
+    "name": "Test User Foreign Key Constraint in Orders",
+    "type": "insert",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (999, 'Pending', 100.00);",
+    "rationale": "To ensure that user_id must refer to an existing user."
+  },
+  {
+    "name": "Test Supplier Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Suppliers (name, contact_email, phone_number, address) VALUES ('Tech Supplies', 'contact@techsupplies.com', '123-456-7890', '123 Tech Lane');",
+    "rationale": "To verify that a new supplier can be created."
+  },
+  {
+    "name": "Test Unique Supplier Name Constraint",
+    "type": "insert",
+    "sql": "INSERT INTO Suppliers (name, contact_email, phone_number, address) VALUES ('Tech Supplies', 'another@techsupplies.com', '098-765-4321', '456 Tech Lane');",
+    "rationale": "To check that supplier names must be unique."
+  },
+  {
+    "name": "Test Order Item Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Order_Items (order_id, product_id, quantity, price) VALUES (1, 1, 2, 1200.00);",
+    "rationale": "To verify that an order item can be successfully created."
+  },
+  {
+    "name": "Test Foreign Key Constraint in Order Items",
+    "type": "insert",
+    "sql": "INSERT INTO Order_Items (order_id, product_id, quantity, price) VALUES (999, 1, 1, 1200.00);",
+    "rationale": "To ensure order_id must refer to an existing order."
+  },
+  {
+    "name": "Test Sales Invoice Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Sales_Invoices (order_id, total_amount) VALUES (1, 100.00);",
+    "rationale": "To verify that a sales invoice can be successfully created."
+  },
+  {
+    "name": "Test Foreign Key Constraint in Sales Invoices",
+    "type": "insert",
+    "sql": "INSERT INTO Sales_Invoices (order_id, total_amount) VALUES (999, 100.00);",
+    "rationale": "To ensure order_id must refer to an existing order."
+  },
+  {
+    "name": "Test Purchase Invoice Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Invoices (supplier_id, total_amount) VALUES (1, 500.00);",
+    "rationale": "To verify that a purchase invoice can be successfully created."
+  },
+  {
+    "name": "Test Foreign Key Constraint in Purchase Invoices",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Invoices (supplier_id, total_amount) VALUES (999, 500.00);",
+    "rationale": "To ensure supplier_id must refer to an existing supplier."
+  },
+  {
+    "name": "Test Purchase Order Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Orders (supplier_id, user_id, status, total) VALUES (1, 1, 'Pending', 300.00);",
+    "rationale": "To verify that a purchase order can be successfully created."
+  },
+  {
+    "name": "Test Foreign Key Constraints in Purchase Orders",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Orders (supplier_id, user_id, status, total) VALUES (999, 999, 'Pending', 300.00);",
+    "rationale": "To ensure both supplier_id and user_id must refer to existing records."
+  },
+  {
+    "name": "Test Purchase Order Item Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Order_Items (purchase_order_id, product_id, quantity, price) VALUES (1, 1, 10, 1200.00);",
+    "rationale": "To verify that a purchase order item can be successfully created."
+  },
+  {
+    "name": "Test Foreign Key Constraints in Purchase Order Items",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Order_Items (purchase_order_id, product_id, quantity, price) VALUES (999, 1, 10, 1200.00);",
+    "rationale": "To ensure purchase_order_id must refer to an existing purchase order."
+  }
+]

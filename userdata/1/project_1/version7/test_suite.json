@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Test User Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('johndoe', 'password123', 'john.doe@example.com');",
+    "rationale": "To verify that a new user can be successfully added to the Users table."
+  },
+  {
+    "name": "Test Department Insertion with Manager",
+    "type": "insert",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('HR', 1);",
+    "rationale": "To ensure that a department can be created and is correctly associated with a user as a manager."
+  },
+  {
+    "name": "Test Product Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Widget', 'A standard widget', 19.99, 100);",
+    "rationale": "To confirm that a product can be added to the Products table with valid details."
+  },
+  {
+    "name": "Test Order Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (1, 'Pending', 99.99);",
+    "rationale": "To check that an order can be recorded successfully in the Orders table."
+  },
+  {
+    "name": "Test Supplier Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Suppliers (name, contact_email, phone_number, address) VALUES ('Best Supplies', 'contact@bestsupplies.com', '123-456-7890', '123 Supply St.');",
+    "rationale": "To validate that a supplier can be added to the Suppliers table."
+  },
+  {
+    "name": "Test Order Item Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Order_Items (order_id, product_id, quantity, price) VALUES (1, 1, 2, 39.98);",
+    "rationale": "To ensure that items can be added to an existing order in the Order_Items table."
+  },
+  {
+    "name": "Test Sales Invoice Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Sales_Invoices (order_id, total_amount) VALUES (1, 99.99);",
+    "rationale": "To confirm that a sales invoice can be created for an existing order."
+  },
+  {
+    "name": "Test Purchase Invoice Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Invoices (supplier_id, total_amount) VALUES (1, 199.99);",
+    "rationale": "To check if a purchase invoice can be created linked to a supplier."
+  },
+  {
+    "name": "Test Purchase Order Creation",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Orders (supplier_id, user_id, status, total) VALUES (1, 1, 'Pending', 199.99);",
+    "rationale": "To ensure that a purchase order can be created referencing both supplier and user."
+  },
+  {
+    "name": "Test Purchase Order Item Insertion",
+    "type": "insert",
+    "sql": "INSERT INTO Purchase_Order_Items (purchase_order_id, product_id, quantity, price) VALUES (1, 1, 5, 99.95);",
+    "rationale": "To validate that purchase order items can be associated with an existing purchase order."
+  }
+]

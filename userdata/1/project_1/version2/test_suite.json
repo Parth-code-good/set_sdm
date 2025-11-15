@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Test Product Stock Quantity Check",
+    "type": "sql",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Test Product', 'A product for testing', 10.00, -5);",
+    "rationale": "This should fail due to CHECK constraint on stock_quantity."
+  },
+  {
+    "name": "Test Sales Invoice Creation",
+    "type": "sql",
+    "sql": "INSERT INTO Sales_Invoices (order_id, total_amount) VALUES (1, 100.00);",
+    "rationale": "This should succeed if there is an order with id 1."
+  },
+  {
+    "name": "Test Purchase Invoice Creation",
+    "type": "sql",
+    "sql": "INSERT INTO Purchase_Invoices (supplier_id, total_amount) VALUES (1, 250.00);",
+    "rationale": "This should succeed if there is a supplier with id 1."
+  }
+]

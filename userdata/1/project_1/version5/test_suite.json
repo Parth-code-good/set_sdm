@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Test Users Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('test_user', 'password123', 'test@example.com');",
+    "rationale": "Verifies that a user can be successfully added to the Users table."
+  },
+  {
+    "name": "Test Unique Constraint on Username",
+    "type": "Integration",
+    "sql": "INSERT INTO Users (username, password, email) VALUES ('test_user', 'password123', 'another@example.com');",
+    "rationale": "Ensures that inserting a duplicate username raises an error due to the unique constraint."
+  },
+  {
+    "name": "Test Departments Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('IT', 1);",
+    "rationale": "Checks if a department can be successfully added with a manager."
+  },
+  {
+    "name": "Test Foreign Key Constraint in Departments",
+    "type": "Integration",
+    "sql": "INSERT INTO Departments (name, manager_id) VALUES ('HR', 99);",
+    "rationale": "Ensures that inserting an invalid manager_id raises an error due to the foreign key constraint."
+  },
+  {
+    "name": "Test Products Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Products (name, description, price, stock_quantity) VALUES ('Laptop', 'A high performance laptop.', 999.99, 10);",
+    "rationale": "Verifies that a product can be successfully added to the Products table."
+  },
+  {
+    "name": "Test Orders Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (1, 'Pending', 199.99);",
+    "rationale": "Checks if an order can be successfully added with a valid user_id."
+  },
+  {
+    "name": "Test Foreign Key Constraint in Orders",
+    "type": "Integration",
+    "sql": "INSERT INTO Orders (user_id, status, total) VALUES (99, 'Pending', 299.99);",
+    "rationale": "Ensures that inserting an invalid user_id raises an error due to the foreign key constraint."
+  },
+  {
+    "name": "Test Order_Items Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Order_Items (order_id, product_id, quantity, price) VALUES (1, 1, 2, 199.99);",
+    "rationale": "Verifies that an order item can be successfully added to the Order_Items table."
+  },
+  {
+    "name": "Test Sales_Invoices Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Sales_Invoices (order_id, total_amount) VALUES (1, 199.99);",
+    "rationale": "Checks if a sales invoice can be successfully added with a valid order_id."
+  },
+  {
+    "name": "Test Purchase_Invoices Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Purchase_Invoices (supplier_id, total_amount) VALUES (1, 300.00);",
+    "rationale": "Verifies that a purchase invoice can be successfully added with a valid supplier_id."
+  },
+  {
+    "name": "Test Purchase_Orders Table Insertion",
+    "type": "Integration",
+    "sql": "INSERT INTO Purchase_Orders (supplier_id, user_id, status, total) VALUES (1, 1, 'Completed', 500.00);",
+    "rationale": "Checks if a purchase order can be successfully added with valid supplier_id and user_id."
+  }
+]
