@@ -342,28 +342,59 @@ Respond with *only* the JSON array inside a single ```json code block.
 
 # ---------- Utility generator (heuristic, can be improved with LLM) ----------
 def generate_utility_table_from_schema(sql_text):
-    parts = sql_text.split("CREATE TABLE")
-    out_lines = ["# Utility Table\n\nThis file explains why each table exists and the purpose of key attributes.\n\n"]
-    for p in parts[1:]:
-        header = p.split("(")[0].strip()
-        table_name = header.split()[0].strip('`"')
-        cols_block = p[p.find("(")+1:p.rfind(")")]
+    """
+    Generates a detailed utility explanation table using an LLM.
+    The LLM explains:
+      - Why each table exists
+      - Why each attribute exists
+    """
+    # -----------------------------
+    # 1. Extract tables + columns
+    # -----------------------------
+    tables = {}
+    pattern = r"CREATE TABLE\s+[`\"]?(\w+)[`\"]?\s*\((.*?)\);"
+    matches = re.findall(pattern, sql_text, flags=re.S)
+
+    for table_name, body in matches:
         cols = []
-        for line in cols_block.split(","):
+        for line in body.split(","):
             line = line.strip()
             if line == "":
                 continue
             col_name = line.split()[0].strip('`"')
             cols.append(col_name)
-        out_lines.append(f"## Table `{table_name}`\n")
-        out_lines.append("| Column | Suggested Purpose |\n|---|---|\n")
-        if cols:
-            for c in cols:
-                out_lines.append(f"| `{c}` | (explain why `{c}` exists; e.g., identifier, timestamp, FK to other table) |\n")
-        else:
-            out_lines.append("| (no columns parsed) | (explain purpose) |\n")
-        out_lines.append("\n")
-    return "".join(out_lines)
+        tables[table_name] = cols
+
+    # -----------------------------
+    # 2. Ask the LLM to explain each table
+    # -----------------------------
+    final_doc = ["# Utility Table\n\n",
+                 "This document explains the purpose of each table and why key attributes exist.\n\n"]
+
+    for table_name, columns in tables.items():
+
+        prompt = ChatPromptTemplate.from_messages([
+            ("system",
+             """You are a database architect. For the given table name and list of columns:
+1. Explain in 2–4 sentences **why this table exists** in a business context.
+2. For each column, explain its purpose in 1 concise sentence.
+Output must be Markdown ONLY."""
+             ),
+            ("user",
+             f"Table name: {table_name}\nColumns: {columns}")
+        ])
+
+        chain = prompt | llm
+        response = chain.invoke({})
+
+        explanation_md = response.content.strip()
+
+        final_doc.append(f"## Table `{table_name}`\n\n")
+        final_doc.append(explanation_md)
+        final_doc.append("\n\n---\n\n")
+
+    return "".join(final_doc)
+
 
 # ---------- Version creation / file management ----------
 def create_project(user_obj, project_name):
