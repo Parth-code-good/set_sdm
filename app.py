@@ -841,6 +841,27 @@ def delete_project(project_id):
     db.session.commit()
     flash("Project deleted.", "info")
     return redirect(url_for("dashboard"))
+@app.route("/delete_version/<int:project_id>/<int:version_id>", methods=["POST"])
+@login_required
+def delete_version(project_id, version_id):
+    user_id = session["user_id"]
+
+    version = Version.query.filter_by(id=version_id, project_id=project_id).first()
+    if not version:
+        flash("Version not found.", "error")
+        return redirect(url_for("view_project", project_id=project_id))
+
+    # Delete version folder from disk
+    v_dir = version_dir(user_id, project_id, version.name)
+    if os.path.exists(v_dir):
+        shutil.rmtree(v_dir)
+
+    # Delete from DB
+    db.session.delete(version)
+    db.session.commit()
+
+    flash(f"Version '{version.name}' deleted.", "success")
+    return redirect(url_for("project_detail", project_id=project_id))
 
 if __name__ == "__main__":
     app.run(debug=True)
